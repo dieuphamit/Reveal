@@ -213,45 +213,38 @@
       appId: "1:909899388823:web:9a40e194a7d4c641bf96d2",
       measurementId: "G-GT3L5ZQ5E4"
     };
-
-  // Khởi tạo ứng dụng Firebase
   const app = initializeApp(firebaseConfig);
-  // Lấy đối tượng Firestore
   const db = getFirestore(app);
 
-  // Lấy ID sản phẩm từ URL
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get('id');
 
-  // Kiểm tra nếu có ID sản phẩm
   if (productId) {
     const docRef = doc(db, "portfolio", productId);
     getDoc(docRef).then((docSnap) => {
       if (docSnap.exists()) {
         const product = docSnap.data();
         
-        // Cập nhật thông tin chi tiết của sản phẩm
         document.title = `${product.name} - Portfolio Details`;
         document.querySelector('.breadcrumbs h2').innerText = product.name;
-        document.querySelector('.portfolio-info h3').innerText = "Project information";
         document.querySelector('.portfolio-info ul li:nth-child(1)').innerHTML = `<strong>Category</strong>: ${product.category}`;
         document.querySelector('.portfolio-info ul li:nth-child(2)').innerHTML = `<strong>Client</strong>: ${product.client}`;
+        document.querySelector('.portfolio-info ul li:nth-child(3)').innerHTML = `<strong>Project date</strong>: ${product.date}`;
         document.querySelector('.portfolio-info ul li:nth-child(4)').innerHTML = `<strong>Project URL</strong>: <a href="${product.url}" target="_blank">${product.url}</a>`;
         document.querySelector('.portfolio-description h2').innerText = `Thông tin dự án: ${product.name}`;
         document.querySelector('.portfolio-description p').innerText = product.description;
         
-        // Xử lý và hiển thị hình ảnh
         const swiperWrapper = document.querySelector('.portfolio-details-slider .swiper-wrapper');
         if (product.images && swiperWrapper) {
-          swiperWrapper.innerHTML = ''; // Xóa các hình ảnh mặc định
+          swiperWrapper.innerHTML = '';
+          // Lặp qua toàn bộ mảng images và tạo slide cho từng hình ảnh
           product.images.forEach(image => {
             const swiperSlide = document.createElement('div');
             swiperSlide.className = 'swiper-slide';
-            swiperSlide.innerHTML = `<img src="${image}" alt="">`;
+            swiperSlide.innerHTML = `<img src="${image}" alt="${product.name}">`;
             swiperWrapper.appendChild(swiperSlide);
           });
           
-          // Khởi tạo lại Swiper sau khi thêm hình ảnh
           new Swiper('.portfolio-details-slider', {
             speed: 400,
             loop: true,
@@ -266,7 +259,6 @@
             }
           });
         }
-
       } else {
         console.log("Không tìm thấy sản phẩm!");
         document.querySelector('.container').innerHTML = '<h2>Không tìm thấy sản phẩm này.</h2>';
