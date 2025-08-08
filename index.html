@@ -682,11 +682,11 @@
         // Sử dụng giá trị từ Firestore (name, category)
         // và tạo URL hình ảnh placeholder (có thể thay đổi)
         portfolioItem.innerHTML = `
-          <img src=${product.images[0]}" class="img-fluid" alt="${product.name}">
+          <img src=${product.images[0]} class="img-fluid" alt="${product.name}">
           <div class="portfolio-info">
             <h4>${product.name}</h4>
             <p>${product.category}</p>
-            <a href="${product.images[0]}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="${product.name}"><i class="bx bx-plus"></i></a>
+            <a href="${product.orgimage}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="${product.name}"><i class="bx bx-plus"></i></a>
             <a href="portfolio-details.html?id=${doc.id}" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
           </div>
         `;
