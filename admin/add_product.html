@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Thêm Sản phẩm mới - Trang quản trị</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Raleway:300,400,500,700,800|Montserrat:300,400,700" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <header id="header" class="d-flex align-items-center">
+    <div class="container d-flex justify-content-between">
+      <div id="logo">
+        <h1><a href="../index.html">Trang<span>Quản trị</span></a></h1>
+      </div>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto" href="../index.html">Trang chủ</a></li>
+          <li><a class="nav-link scrollto active" href="add_product.html">Thêm sản phẩm</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Thêm Sản phẩm mới</h2>
+          <ol>
+            <li><a href="../index.html">Trang chủ</a></li>
+            <li>Thêm sản phẩm</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="add-product-form" class="inner-page pt-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="form">
+              <form id="addProductForm" onsubmit="return false;" method="post" role="form">
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="productName">Tên sản phẩm</label>
+                    <input type="text" name="product_name" class="form-control" id="productName" required>
+                  </div>
+                  <div class="form-group col-md-6 mt-3 mt-md-0">
+                    <label for="productCategory">Danh mục</label>
+                    <input type="text" class="form-control" name="product_category" id="productCategory" required>
+                  </div>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="productClient">Khách hàng</label>
+                  <input type="text" class="form-control" name="product_client" id="productClient" required>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="projectUrl">URL dự án</label>
+                  <input type="text" class="form-control" name="project_url" id="projectUrl">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="productDescription">Mô tả</label>
+                  <textarea class="form-control" name="product_description" rows="5" id="productDescription" required></textarea>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="productImage">Hình ảnh</label>
+                  <input type="file" class="form-control" name="product_image" id="productImage">
+                </div>
+                
+                <div class="my-3">
+                  <div class="loading">Đang tải</div>
+                  <div class="error-message"></div>
+                  <div class="sent-message">Sản phẩm đã được thêm thành công!</div>
+                </div>
+                
+                <div class="text-center mt-3"><button type="submit">Thêm sản phẩm</button></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </main>
+
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong>Reveal</strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/php-email-form/validate.js"></script>
+
+  <script src="../assets/js/main.js"></script>
+
+
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+  const firebaseConfig = {
+      apiKey: "AIzaSyDbOAach8dGq0mp4cLaeDFrfxmiPmEZ8Ts",
+      authDomain: "tmt-website-62866.firebaseapp.com",
+      projectId: "tmt-website-62866",
+      storageBucket: "tmt-website-62866.firebasestorage.app",
+      messagingSenderId: "909899388823",
+      appId: "1:909899388823:web:9a40e194a7d4c641bf96d2",
+      measurementId: "G-GT3L5ZQ5E4"
+    };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const productName = document.getElementById('productName').value;
+    const productCategory = document.getElementById('productCategory').value;
+    const productClient = document.getElementById('productClient').value;
+    const projectUrl = document.getElementById('projectUrl').value;
+    const productDescription = document.getElementById('productDescription').value;
+
+    try {
+      // Sử dụng collection() và addDoc()
+      await addDoc(collection(db, "portfolio"), {
+        name: productName,
+        category: productCategory,
+        client: productClient,
+        url: projectUrl,
+        description: productDescription,
+        date: new Date()
+      });
+
+      alert("Sản phẩm đã được thêm thành công!");
+      document.getElementById('addProductForm').reset();
+    } catch (error) {
+      console.error("Lỗi khi thêm sản phẩm: ", error);
+      alert("Có lỗi xảy ra, vui lòng thử lại.");
+    }
+  });
+</script>
+
+</body>
+
+</html>
