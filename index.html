@@ -630,87 +630,91 @@
 
 
   <script src="admin/js/chatbox.js"></script>
+
   <script type="module">
+  // Nhập các hàm cần thiết từ Firebase SDK
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
   import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
-   const firebaseConfig = {
-      apiKey: "AIzaSyDbOAach8dGq0mp4cLaeDFrfxmiPmEZ8Ts",
-      authDomain: "tmt-website-62866.firebaseapp.com",
-      projectId: "tmt-website-62866",
-      storageBucket: "tmt-website-62866.firebasestorage.app",
-      messagingSenderId: "909899388823",
-      appId: "1:909899388823:web:9a40e194a7d4c641bf96d2",
-      measurementId: "G-GT3L5ZQ5E4"
-    };
+  // Cấu hình Firebase của bạn
+  // Thay thế các giá trị này bằng cấu hình dự án của bạn (nếu có)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDbOAach8dGq0mp4cLaeDFrfxmiPmEZ8Ts",
+    authDomain: "tmt-website-62866.firebaseapp.com",
+    projectId: "tmt-website-62866",
+    storageBucket: "tmt-website-62866.firebasestorage.app",
+    messagingSenderId: "909899388823",
+    appId: "1:909899388823:web:9a40e194a7d4c641bf96d2",
+    measurementId: "G-GT3L5ZQ5E4"
+  };
+
+  // Khởi tạo ứng dụng Firebase
   const app = initializeApp(firebaseConfig);
+  // Lấy đối tượng Firestore
   const db = getFirestore(app);
 
-  // Lấy dữ liệu từ Firestore và hiển thị
-  const q = query(collection(db, "portfolio"), orderBy("date", "desc"));
-  onSnapshot(q, (snapshot) => {
-    const portfolioList = document.getElementById('portfolio-list');
-    if (portfolioList) { // Kiểm tra null để tránh lỗi
-        portfolioList.innerHTML = ''; 
-    }
-    
-    snapshot.forEach((doc) => {
-      const product = doc.data();
-      const portfolioItem = document.createElement('div');
-      portfolioItem.className = `col-lg-4 col-md-6 portfolio-item filter-${product.category.toLowerCase()}`;
+  // Tham chiếu đến phần tử HTML nơi bạn muốn hiển thị danh sách sản phẩm
+  const portfolioList = document.getElementById('portfolio-list');
+
+  // Kiểm tra xem phần tử có tồn tại không để tránh lỗi
+  if (portfolioList) {
+    // Tạo truy vấn Firestore: lấy tất cả các tài liệu từ bộ sưu tập "portfolio"
+    // và sắp xếp theo trường "date" theo thứ tự giảm dần
+    const q = query(collection(db, "portfolio"), orderBy("date", "desc"));
+
+    // Lắng nghe các thay đổi theo thời gian thực trong bộ sưu tập "portfolio"
+    onSnapshot(q, (snapshot) => {
+      // Xóa tất cả các sản phẩm hiện có trên trang trước khi hiển thị lại
+      portfolioList.innerHTML = '';
       
-      portfolioItem.innerHTML = `
-        <img src="https://via.placeholder.com/400x400.png?text=${product.name}" class="img-fluid" alt="${product.name}">
-        <div class="portfolio-info">
-          <h4>${product.name}</h4>
-          <p>${product.category}</p>
-          <a href="#" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="${product.name}"><i class="bx bx-plus"></i></a>
-          <a href="portfolio-details.html?id=${doc.id}" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
-        </div>
-      `;
+      // Lặp qua từng tài liệu (sản phẩm) trong snapshot
+      snapshot.forEach((doc) => {
+        const product = doc.data(); // Lấy dữ liệu của sản phẩm
+        
+        // Tạo một phần tử HTML mới cho mỗi sản phẩm
+        const portfolioItem = document.createElement('div');
+        
+        // Gán các class CSS cho phần tử, sử dụng category để lọc
+        // Ví dụ: filter-app, filter-card, filter-web
+        portfolioItem.className = `col-lg-4 col-md-6 portfolio-item filter-${product.category.toLowerCase()}`;
+        
+        // Tạo cấu trúc HTML bên trong cho sản phẩm
+        // Sử dụng giá trị từ Firestore (name, category)
+        // và tạo URL hình ảnh placeholder (có thể thay đổi)
+        portfolioItem.innerHTML = `
+          <img src="https://via.placeholder.com/400x400.png?text=${product.name}" class="img-fluid" alt="${product.name}">
+          <div class="portfolio-info">
+            <h4>${product.name}</h4>
+            <p>${product.category}</p>
+            <a href="assets/img/portfolio/portfolio-1.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="${product.name}"><i class="bx bx-plus"></i></a>
+            <a href="portfolio-details.html?id=${doc.id}" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+          </div>
+        `;
+        
+        // Thêm phần tử sản phẩm vào danh sách
+        portfolioList.appendChild(portfolioItem);
+      });
       
-      if (portfolioList) {
-          portfolioList.appendChild(portfolioItem);
-      }
+      // Sau khi thêm các sản phẩm, khởi tạo lại Isotope (nếu bạn sử dụng nó) để bộ lọc hoạt động
+      const portfolioIsotope = new Isotope(portfolioList, {
+          itemSelector: '.portfolio-item'
+      });
+
+      // Lắng nghe các nút bộ lọc để cập nhật Isotope
+      const portfolioFilters = document.getElementById('portfolio-flters').querySelectorAll('li');
+      portfolioFilters.forEach(filter => {
+          filter.addEventListener('click', function (e) {
+              e.preventDefault();
+              portfolioFilters.forEach(f => f.classList.remove('filter-active'));
+              this.classList.add('filter-active');
+              portfolioIsotope.arrange({
+                  filter: this.getAttribute('data-filter')
+              });
+          });
+      });
     });
-  });
+  }
 </script>
-
-<script>
-        // Dán mã JavaScript từ Google AI Studio vào đây
-        // Mã này sẽ chứa API Key và cách gọi mô hình AI
-
-        // Ví dụ minh họa về cách hoạt động (không phải mã thực tế từ Google AI Studio)
-        async function getGeminiResponse(message) {
-            // Đây là nơi bạn dán mã gọi API.
-            // Mã thực tế sẽ sử dụng một thư viện hoặc fetch API để gửi tin nhắn
-            // và nhận phản hồi từ mô hình AI.
-            console.log("Đang gửi tin nhắn đến Gemini:", message);
-
-            // Giả lập phản hồi từ bot
-            return "Tôi đã nhận được tin nhắn của bạn: " + message;
-        }
-
-        async function sendMessage() {
-            const userInput = document.getElementById('user-input');
-            const message = userInput.value.trim();
-            if (message === '') return;
-
-            // Hiển thị tin nhắn của người dùng
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML += `<div class="message user-message">${message}</div>`;
-            userInput.value = '';
-
-            // Gọi API để lấy phản hồi từ bot
-            const botResponse = await getGeminiResponse(message);
-
-            // Hiển thị phản hồi của bot
-            chatContainer.innerHTML += `<div class="message bot-message">${botResponse}</div>`;
-
-            // Cuộn xuống cuối khung chat
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-    </script>
 
     <script>
     (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="w6q_1SgNawxs6IpD518Sr";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
